@@ -4,7 +4,7 @@ on: [push]
 
 jobs: 
   SAST-SCAN:
-    name: Run Bandit Scan
+    name: Run Scans
     runs-on: ubuntu-latest
     steps: 
     - name: Checkout Code
@@ -13,7 +13,16 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
+    # Bandit Scan    
     - name: Install Bandit
       run: pip install bandit
     - name: Bandit Scan  
-      run: bandit -lll -iii -r . -f json -o bandit-report
+      run: bandit -ll -ii -r . -f json -o bandit-report
+    # SonarQube Scan
+    - name: Official SonarQube Scan  
+      uses: SonarSource/sonarqube-scan-action@v2.3.0
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+ 
+          
